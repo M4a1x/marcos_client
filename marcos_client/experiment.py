@@ -195,8 +195,10 @@ class Experiment:
             tolerance: minimum difference two values need to be considered binary-unique (2e-6 corresponds to ~19 bits)
             -- returns a tuple with repeated elements removed"""
             idata, qdata = farr.real, farr.imag
+
             def unique(k):
                 return np.concatenate([[True], np.abs(np.diff(k)) > tolerance])
+
             # DEBUGGING: use the below lambda instead to avoid stripping repeated values
             # unique = lambda k: np.ones_like(k, dtype=bool)
             idata_u, qdata_u = unique(idata), unique(qdata)

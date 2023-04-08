@@ -10,7 +10,7 @@ requires-python = ">=3.7"
 license = "GPL-3.0-or-later"
 keywords = []
 authors = [
-  { name = "Vlad Negnevitsky", email = "vee neg nev at gee mail dot com" },
+  { name = "Vlad Negnevitsky", email = "vnegnev@users.noreply.github.com" },
   { name = "Max Stabel", email = "M4a1x@users.noreply.github.com" },
 ]
 classifiers = [
@@ -41,6 +41,7 @@ Source = "https://github.com/vnegnev/marcos_client"
 path = "marcos_client/__about__.py"
 
 [tool.hatch.envs.default]
+path = ".venv"
 dependencies = [
   "ruff",
   "black",

@@ -254,11 +254,14 @@ def cl2bin(
     changelist_grad_paired = [
         [k, m] for k, m in zip(changelist_grad[::2], changelist_grad[1::2])
     ]
+
     def sortfn(change):
         return change[0]
+
     # changelist_grad.sort(key=sortfn) # sort by time
     def sortfn_paired(change):
         return change[0][0]
+
     changelist_grad_paired.sort(key=sortfn_paired)  # sort by time
     changelist_grad = [
         k for sl in changelist_grad_paired for k in sl
