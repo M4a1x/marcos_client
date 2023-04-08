@@ -3,7 +3,6 @@
 # To run a single test, use e.g.:
 # python -m unittest test_server.ServerTest.test_bad_packet
 
-import pdb
 import socket
 import time
 import unittest
@@ -12,10 +11,8 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 
-st = pdb.set_trace
-
-from local_config import fpga_clk_freq_MHz, grad_board, ip_address, port
-from server_comms import *
+from marcos_client.local_config import config
+from marcos_client.server_comms import *
 
 
 class ServerTest(unittest.TestCase):
@@ -23,7 +20,7 @@ class ServerTest(unittest.TestCase):
     # def setUpClass(cls):
     def setUp(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect((ip_address, port))
+        self.s.connect((config["server"]["ip_address"], config["server"]["port"]))
         self.packet_idx = 0
 
     def tearDown(self):
@@ -381,7 +378,9 @@ class ServerTest(unittest.TestCase):
             ],
         )
 
-    @unittest.skipUnless(grad_board == "gpa-fhdo", "requires GPA-FHDO board")
+    @unittest.skipUnless(
+        config["server"]["grad_board"] == "gpa-fhdo", "requires GPA-FHDO board"
+    )
     def test_grad_adc(self):
         print_adc_reads = False
         # initialise SPI
@@ -595,7 +594,7 @@ def test_client(s):
 
 def main_test():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((ip_address, port))
+        s.connect((config["server"]["ip_address"], config["server"]["port"]))
         # throughput_test(s)
         test_client(s)
         # shutdown_server(s)

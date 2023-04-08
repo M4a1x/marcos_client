@@ -3,15 +3,13 @@
 # loopback test using ocra-pulseq
 #
 
-import pdb
 import sys
 
-import experiment as ex
 import matplotlib.pyplot as plt
 import numpy as np
 from pulseq_assembler import PSAssembler
 
-st = pdb.set_trace
+from marcos_client import experiment as ex
 
 if __name__ == "__main__":
     lo_freq = 2.1  # MHz

@@ -4,8 +4,9 @@
 # pulse programming language
 #
 
-import experiment as exp
 import numpy as np
+
+from marcos_client import experiment as exp
 
 
 class Marcostek:

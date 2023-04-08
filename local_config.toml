@@ -1,3 +1,4 @@
+[server]
 ## IP address: Red Pitaya address or 
 ## 'localhost' if emulating a local server with marcos_server through verilator
 ip_address = "localhost" # e.g. 192.168.1.189
@@ -14,6 +15,7 @@ grad_board = "gpa-fhdo" # "ocra1"
 ## GPA-FHDO current per volt setting (determined by resistors)
 gpa_fhdo_current_per_volt = 2.5
 
+[client]
 ## Flocra-pulseq path, for use of the flocra-pulseq library (optional).
 ## Uncomment the lines below and adjust the path to suit your
 ## flocra-pulseq location.

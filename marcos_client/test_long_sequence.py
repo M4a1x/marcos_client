@@ -11,14 +11,10 @@
 #
 # If you wish to see what happens for different delays, just alter the arguments to long_loopback() at the end of this file.
 
-import pdb
 
-import experiment as ex
-import matplotlib.pyplot as plt
 import numpy as np
-from local_config import grad_board
 
-st = pdb.set_trace
+from marcos_client import experiment as ex
 
 # In each TR, a wait of rf_start_delay occurs, the RF turns on, it
 # turns off after rf_length. Each TR is by default 1 second long. The RX

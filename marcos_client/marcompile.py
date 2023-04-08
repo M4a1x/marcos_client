@@ -1,28 +1,33 @@
 #!/usr/bin/env python3
 # Basic CSV -> machine code compiler for marga
 
+import logging
 import warnings
 
 import numpy as np
-from marmachine import *
 
-try:
-    from local_config import grad_board
-except ModuleNotFoundError:
-    grad_board = "gpa-fhdo"
+from marcos_client.local_config import config
+from marcos_client.marmachine import (
+    CIC_FASTEST_RATE,
+    CIC_RATE_DATAWIDTH,
+    CIC_SLOWEST_RATE,
+    CIC_STAGES,
+    COUNTER_MAX,
+    IFINISH,
+    INOP,
+    IWAIT,
+    MARGA_BUFS,
+    MarGradWarning,
+    MarRemovedInstructionWarning,
+    insta,
+    instb,
+)
 
-import pdb
+logger = logging.getLogger(__name__)
 
-st = pdb.set_trace
-
+grad_board = config["server"]["grad_board"]
 grad_data_bufs = (1, 2)
-
 max_removed_instructions = 1000
-
-
-def debug_print(*args, **kwargs):
-    # print(*args, **kwargs)
-    pass
 
 
 def col2buf(col_idx, value):
@@ -276,7 +281,7 @@ def cl2bin(
 
     for c in changelist_grad:
         t = c[0]
-        debug_print("t: ", t, " t_last: ", t_last, "num_chgs: ", num_chgs, " c: ", c)
+        logger.debug("t: %s, t_last: %s, num_chgs: %s, c: %s", t, t_last, num_chgs, c)
         idx = c[1] - 1  # 0 for LSB, 1 for MSB
         msb = idx == 1
         data = c[2]
@@ -430,9 +435,9 @@ def cl2bin(
     last_buf_time_left = np.zeros(MARGA_BUFS, dtype=np.int32)
     buf_time_left = np.zeros(MARGA_BUFS, dtype=np.int32)
     # buf_empty_time = np.zeros(MARGA_BUFS, dtype=np.int32)
-    debug_print("changes:")
+    logger.debug("changes:")
     for k in changes:
-        debug_print(k)
+        logger.debug(k)
 
     for event in changes:
         b_instrs = event[1].size
@@ -447,10 +452,10 @@ def cl2bin(
             )  # delay for the time instruction
             bdata.append(insta(IWAIT, wait_time - 3))
             excess_dtime_tmp -= wait_time
-            debug_print("i wait ", wait_time - 3)
+            logger.debug("i wait %s", wait_time - 3)
         if excess_dtime_tmp:  # final delay of 1 or 2 cycles
             for k in range(dtime - b_instrs):
-                debug_print("i nop")
+                logger.debug("i nop")
                 bdata.append(insta(INOP, 0))
 
         # time left after delays from nops or waits
@@ -463,7 +468,7 @@ def cl2bin(
         buf_time_left -= excess_dtime
         buf_time_left[buf_time_left < 0] = 0
         this_time_offset = event[3]
-        debug_print(
+        logger.debug(
             "--- dtime {:2d}, this_time_offset: {:2d}, b_instrs: {:2d}, lbtl: ".format(
                 dtime, this_time_offset, b_instrs
             ),
@@ -484,7 +489,7 @@ def cl2bin(
                 extra_delay = this_time_offset - btli + b_instrs - 1
                 buf_time_left[ind] += extra_delay + 1
 
-            debug_print(
+            logger.debug(
                 "bti={:d} btli={:d} m={:d} empty={:d} edel={:d} instb i {:d} del {:d} dat {:d}".format(
                     buf_time_left[ind],
                     btli,

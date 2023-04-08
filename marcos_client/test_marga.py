@@ -2,18 +2,21 @@
 # Basic hacks and tests for marga system
 #
 
-import pdb
 import socket
 import time
 
-import marcompile as fc
 import matplotlib.pyplot as plt
 import numpy as np
-from local_config import fpga_clk_freq_MHz, grad_board, ip_address, port
-from marmachine import *
-from server_comms import *
 
-st = pdb.set_trace
+from marcos_client import marcompile as fc
+from marcos_client.local_config import config
+from marcos_client.marmachine import *
+from marcos_client.server_comms import *
+
+fpga_clk_freq_MHz = config["server"]["fpga_clk_freq_MHz"]
+grad_board = config["server"]["grad_board"]
+ip_address = config["server"]["ip"]
+port = config["server"]["port"]
 
 
 def get_exec_state(socket, display=True):

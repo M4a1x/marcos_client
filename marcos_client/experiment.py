@@ -2,19 +2,22 @@
 #
 # Basic toolbox for server operations; wraps up a lot of stuff to avoid the need for hardcoding on the user's side.
 
-import pdb
 import socket
-import time
 import warnings
 
-import grad_board as gb
-import marcompile as fc
 import matplotlib.pyplot as plt
 import numpy as np
-import server_comms as sc
-from local_config import fpga_clk_freq_MHz, grad_board, ip_address, port
 
-st = pdb.set_trace
+from marcos_client import grad_board as gb
+from marcos_client import marcompile as fc
+from marcos_client import server_comms as sc
+from marcos_client.local_config import config
+
+fpga_clk_freq_MHz = config["server"]["fpga_clk_freq_MHz"]
+grad_board = config["server"]["grad_board"]
+ip_address = config["server"]["ip_address"]
+port = config["server"]["port"]
+
 
 ######## TODO: configure the final buffers as well, whether in marcompile or elsewhere
 

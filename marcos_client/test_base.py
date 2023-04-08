@@ -3,21 +3,13 @@
 # Base definitions and functions used for marga testing/simulation
 
 import os
-import pdb
-import socket
-import subprocess
-import sys
-import time
-import unittest
-import warnings
 
-import experiment as exp
-import marcompile as mc
-import matplotlib.pyplot as plt
 import numpy as np
-import server_comms as sc
 
-st = pdb.set_trace
+from marcos_client import Experiment as exp
+from marcos_client import marcompile as mc
+from marcos_client import server_comms as sc
+
 ip_address = "localhost"
 port = 11111
 

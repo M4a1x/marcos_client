@@ -38,18 +38,16 @@
 #
 # TODO: actually use class inheritance here, instead of two separate classes
 
-import pdb
 import time
 import warnings
 
-import local_config as lc
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.polynomial import Polynomial
 
-st = pdb.set_trace
+from marcos_client.local_config import config
 
-grad_clk_t = 1 / lc.fpga_clk_freq_MHz  # ~8.14ns period for RP-122
+grad_clk_t = 1 / config["server"]["fpga_clk_freq_MHz"]  # ~8.14ns period for RP-122
 
 
 class OCRA1:
@@ -204,7 +202,7 @@ class OCRA1:
 
     def calibrate(self):
         # Fill more in here
-        st()
+        pass
 
     def keys(self):
         return ["ocra1_" + l for l in ["vx", "vy", "vz", "vz2"]]
@@ -253,7 +251,7 @@ class GPAFHDO:
 
         # try to get from local_config.py
         try:
-            self.gpa_current_per_volt = lc.gpa_fhdo_current_per_volt
+            self.gpa_current_per_volt = config["server"]["gpa_fhdo_current_per_volt"]
         except AttributeError:
             self.gpa_current_per_volt = (
                 2.5  # if it doesn't match your grad board, add to your local_config.py

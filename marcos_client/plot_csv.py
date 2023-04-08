@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # Basic script to plot the CSV that marga_sim produces, so that you can visualise the expected pulse sequence from the hardware.
 
-import pdb
 import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
-from local_config import fpga_clk_freq_MHz
 
-st = pdb.set_trace
+from marcos_client.local_config import config
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -29,7 +27,7 @@ if __name__ == "__main__":
         data[1:, 0] - data[1, 0] + 1
     )  # remove dead time in the beginning taken up by simulated memory writes
 
-    time_us = data[:, 0] / fpga_clk_freq_MHz
+    time_us = data[:, 0] / config["server"]["fpga_clk_freq_MHz"]
     tx = data[:, 1:5].astype(np.int16) / 32768
     # offset binary
     fhdo = data[:, 5:9].astype(np.uint16) / 32768 - 1

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import pdb
 
-import experiment as ex
 import matplotlib.pyplot as plt
 import numpy as np
-from local_config import grad_board
 
-st = pdb.set_trace
+from marcos_client import experiment as ex
+from marcos_client.local_config import config
+
+grad_board = config["server"]["grad_board"]
 
 
 def trapezoid(plateau_a, total_t, ramp_t, ramp_pts, total_t_end_to_end=True, base_a=0):

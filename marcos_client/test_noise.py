@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-import pdb
 
-import experiment as ex
 import matplotlib.pyplot as plt
 import numpy as np
-from local_config import grad_board
 
-st = pdb.set_trace
+from marcos_client import experiment as ex
+from marcos_client.local_config import config
 
 
 def test_jitter(
@@ -51,7 +49,7 @@ def test_jitter(
         np.array([grad_amp, 0, grad_amp, 0]),
     )
 
-    gpa_fhdo_offset_time = 10 if grad_board == "gpa-fhdo" else 0
+    gpa_fhdo_offset_time = 10 if config["server"]["grad_board"] == "gpa-fhdo" else 0
 
     event_dict = {
         "tx0": rf_data,
