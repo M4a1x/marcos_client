@@ -4,18 +4,23 @@
 # pulse programming language
 #
 
-import numpy as np
 import experiment as exp
+import numpy as np
+
 
 class Marcostek:
     """Provides a simple API to interact with the Experiment class, with
     discrete commands that can be called in order."""
 
-    def __init__(self, exp, grad_update_interval=5,
-                 tx_gate_overhead=0,
-                 invert_tx_gate=False,
-                 rx_gate_overhead=0,
-                 invert_rx_gate=False):
+    def __init__(
+        self,
+        exp,
+        grad_update_interval=5,
+        tx_gate_overhead=0,
+        invert_tx_gate=False,
+        rx_gate_overhead=0,
+        invert_rx_gate=False,
+    ):
         """exp: previously-created Experiment object
 
         grad_update_interval: raster time of gradients in us.
@@ -45,9 +50,8 @@ class Marcostek:
         self._invert_rx_gate = invert_rx_gate
         self._global_time = grad_update_interval
 
-
     def _chan_str(self, chan):
-        chan_str = ['x', 'y', 'z', 'z2']
+        chan_str = ["x", "y", "z", "z2"]
         if type(chan) is str:
             assert chan in chan_str, "Unknown grad channel"
             return chan
@@ -58,7 +62,7 @@ class Marcostek:
     ### Pulse programming commands
 
     def delay(self, time):
-        """ time in us """
+        """time in us"""
         assert time > 0, "Time cannot be negative"
         self._global_time += time
 
@@ -68,8 +72,12 @@ class Marcostek:
 
         Takes grad_update_interval us to complete.
         """
-        self._exp.add_flodict({'grad_v' + self._chan_str(chan):
-                               ( np.array([self._global_time]), np.array([0]) )})
+        self._exp.add_flodict(
+            {
+                "grad_v"
+                + self._chan_str(chan): (np.array([self._global_time]), np.array([0]))
+            }
+        )
 
         self._global_time += self._grad_update_interval
 
@@ -81,8 +89,15 @@ class Marcostek:
         Takes grad_update_interval us to complete.
         """
         assert -1 <= value and value <= 1, "Grad value out of range"
-        self._exp.add_flodict({'grad_v' + self._chan_str(chan):
-                               ( np.array([self._global_time]), np.array([value]) )})
+        self._exp.add_flodict(
+            {
+                "grad_v"
+                + self._chan_str(chan): (
+                    np.array([self._global_time]),
+                    np.array([value]),
+                )
+            }
+        )
 
         self._global_time += self._grad_update_interval
 
@@ -106,14 +121,32 @@ class Marcostek:
         assert -1 <= start_val and start_val <= 1, "Grad ramp start value out of range"
         assert -1 <= end_val and end_val <= 1, "Grad ramp end value out of range"
         assert n_steps > 0, "Number of steps cannot be negative"
-        assert step_duration >= self._grad_update_interval, \
-            "Step duration cannot be shorter than gradient update interval"
-        self._exp.add_flodict({'grad_v' + self._chan_str(chan):
-                               ( self._global_time + np.linspace(step_duration, n_steps * step_duration, n_steps),
-                                 np.linspace(start_val, end_val, n_steps) )})
+        assert (
+            step_duration >= self._grad_update_interval
+        ), "Step duration cannot be shorter than gradient update interval"
+        self._exp.add_flodict(
+            {
+                "grad_v"
+                + self._chan_str(chan): (
+                    self._global_time
+                    + np.linspace(step_duration, n_steps * step_duration, n_steps),
+                    np.linspace(start_val, end_val, n_steps),
+                )
+            }
+        )
         self._global_time += n_steps * step_duration
 
-    def pulse(self, chan, amp, phase, duration, end_amp=0, end_phase=0, pulse_tx_gate=True, tx_gate_overhead=None):
+    def pulse(
+        self,
+        chan,
+        amp,
+        phase,
+        duration,
+        end_amp=0,
+        end_phase=0,
+        pulse_tx_gate=True,
+        tx_gate_overhead=None,
+    ):
         """Does a rectangular RF pulse
 
         chan: 0 or 1, marga TX channel to output the pulse on
@@ -151,16 +184,29 @@ class Marcostek:
         assert duration > 0, "RF pulse duration cannot be negative"
         assert tx_gate_overhead >= 0, "RF pulse gate overhead time cannot be negative"
 
-        phase_rad, end_phase_rad = phase * np.pi/180, end_phase * np.pi/180
+        phase_rad, end_phase_rad = phase * np.pi / 180, end_phase * np.pi / 180
         cplx_scale = np.cos(phase_rad) + 1j * np.sin(phase_rad)
         end_cplx_scale = np.cos(end_phase_rad) + 1j * np.sin(end_phase_rad)
 
-        self._exp.add_flodict({'tx'+str(chan): ( self._global_time + tx_gate_overhead + np.array([0, duration]),
-                                                 np.array([amp * cplx_scale, end_amp * end_cplx_scale]) )})
+        self._exp.add_flodict(
+            {
+                "tx"
+                + str(chan): (
+                    self._global_time + tx_gate_overhead + np.array([0, duration]),
+                    np.array([amp * cplx_scale, end_amp * end_cplx_scale]),
+                )
+            }
+        )
 
         if pulse_tx_gate:
-            self._exp.add_flodict({'tx_gate': ( self._global_time + np.array([0, duration + tx_gate_overhead]),
-                                                np.array([not self._invert_tx_gate, self._invert_tx_gate]) )})
+            self._exp.add_flodict(
+                {
+                    "tx_gate": (
+                        self._global_time + np.array([0, duration + tx_gate_overhead]),
+                        np.array([not self._invert_tx_gate, self._invert_tx_gate]),
+                    )
+                }
+            )
 
         self._global_time += duration + tx_gate_overhead
 
@@ -185,26 +231,39 @@ class Marcostek:
         assert duration > 0, "RX duration cannot be negative"
         assert rx_gate_overhead >= 0, "RX gate overhead time cannot be negative"
 
-        self._exp.add_flodict({
-            'rx'+str(chan)+'_en': (self._global_time + rx_gate_overhead + np.array([0, duration]),
-                                   np.array([1, 0]) )})
+        self._exp.add_flodict(
+            {
+                "rx"
+                + str(chan)
+                + "_en": (
+                    self._global_time + rx_gate_overhead + np.array([0, duration]),
+                    np.array([1, 0]),
+                )
+            }
+        )
 
         if pulse_rx_gate:
-            self._exp.add_flodict({'rx_gate': (self._global_time + np.array([0, duration + rx_gate_overhead]),
-                                               np.array([not self._invert_rx_gate, self._invert_rx_gate]) ) })
+            self._exp.add_flodict(
+                {
+                    "rx_gate": (
+                        self._global_time + np.array([0, duration + rx_gate_overhead]),
+                        np.array([not self._invert_rx_gate, self._invert_rx_gate]),
+                    )
+                }
+            )
 
         self._global_time += duration + rx_gate_overhead
 
+
 def test_marcostek():
-    expt = exp.Experiment(lo_freq=5, # MHz
-                          rx_t=1.5) # us sampling rate)
+    expt = exp.Experiment(lo_freq=5, rx_t=1.5)  # MHz  # us sampling rate)
     f = Marcostek(expt)
 
     # Turn all 4 gradients off
     for k in range(2):
-        f.gradoff(k) # index-based
-    f.gradoff('z') # string-based
-    f.gradoff('z2')
+        f.gradoff(k)  # index-based
+    f.gradoff("z")  # string-based
+    f.gradoff("z2")
 
     # Wait 10us
     f.delay(10)
@@ -215,12 +274,12 @@ def test_marcostek():
 
     # Ramp the x and y gradients one after the other: start value, end value, number of steps, step duration
     f.delay(20)
-    f.gradramp('x', 0.0, 0.8, 5, 8)
-    f.gradramp('y', 0.0, 0.6, 5, 8)
+    f.gradramp("x", 0.0, 0.8, 5, 8)
+    f.gradramp("y", 0.0, 0.6, 5, 8)
 
     f.delay(20)
-    f.gradramp('x', 0.8, -0.5, 10, 5)
-    f.gradramp('y', 0.6, -0.5, 10, 5)
+    f.gradramp("x", 0.8, -0.5, 10, 5)
+    f.gradramp("y", 0.6, -0.5, 10, 5)
 
     # Do some RF pulses of different amplitudes and lengths: 0, 180 and 235 deg phases
     # Channel, amplitude, phase, pulse length
@@ -251,7 +310,8 @@ def test_marcostek():
 
     rxd, msgs = expt.run()
     expt.close_server(True)
-    expt._s.close() # close socket
+    expt._s.close()  # close socket
+
 
 if __name__ == "__main__":
     test_marcostek()
