@@ -24,7 +24,12 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["numpy", "matplotlib", "msgpack"]
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "msgpack",
+  "tomli; python_version < '3.11'",
+]
 dynamic = ["version"]
 
 [project.urls]
@@ -36,10 +41,25 @@ Source = "https://github.com/vnegnev/marcos_client"
 path = "marcos_client/__about__.py"
 
 [tool.hatch.envs.default]
-dependencies = ["pytest", "pytest-cov"]
+dependencies = [
+  "ruff",
+  "black",
+  "mypy",
+  "pylint",
+  "coverage[toml",
+  "pytest",
+  "pytest-cov",
+]
+
 [tool.hatch.envs.default.scripts]
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=marcos_client --cov=tests {args}"
 no-cov = "cov --no-cov {args}"
+check = [
+  "black --check --diff {args:.}",
+  "ruff {args:.}",
+  "pylint {args:marcos_client tests}",
+]
+fmt = ["black {args:.}", "ruff --fix {args:.}"]
 
 [[tool.hatch.envs.test.matrix]]
 python = ["37", "38", "39", "310", "311"]
