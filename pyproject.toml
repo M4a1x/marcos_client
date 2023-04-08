@@ -28,6 +28,7 @@ dependencies = [
   "numpy",
   "matplotlib",
   "msgpack",
+  "platformdirs",
   "tomli; python_version < '3.11'",
 ]
 dynamic = ["version"]
@@ -36,6 +37,9 @@ dynamic = ["version"]
 Documentation = "https://github.com/vnegnev/marcos_client#readme"
 Issues = "https://github.com/vnegnev/marcos_client/issues"
 Source = "https://github.com/vnegnev/marcos_client"
+
+[project.scripts]
+marcos = "marcos_client.cli:main"
 
 [tool.hatch.version]
 path = "marcos_client/__about__.py"
