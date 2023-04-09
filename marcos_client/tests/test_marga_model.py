@@ -10,7 +10,8 @@
 # To run a single test, use e.g.:
 # python -m unittest test_marga_model.Modeltest.test_many_quick
 
-from marcos_client.test_base import *
+from marcos_client.tests.test_base import *
+import unittest
 
 
 class ModelTest(unittest.TestCase):
