@@ -4,7 +4,7 @@
 
 -----
 
-Python-based MaRCoS GUI and associated tests.
+Python-based MaRCoS CLI, associated tests and APIs.
 
 
 **Table of Contents**

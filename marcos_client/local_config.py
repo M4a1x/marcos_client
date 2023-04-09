@@ -19,6 +19,11 @@ def program_name() -> str:
     return __package__.split(".", maxsplit=1)[0]
 
 
+def reload_config(additional_config_files: Iterable[Path] | None = None) -> dict:
+    global config
+    config = _load_config(additional_config_files)
+
+
 def _load_config(additional_config_files: Iterable[Path] | None = None) -> dict:
     default_config_string = _load_default_config()
     _config = _parse_config_string(default_config_string)

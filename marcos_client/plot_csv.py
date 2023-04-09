@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-# Basic script to plot the CSV that marga_sim produces, so that you can visualise the expected pulse sequence from the hardware.
+"""Basic script to plot the CSV that marga_sim produces,
+so that you can visualise the expected pulse sequence from the hardware."""
 
 import sys
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from marcos_client.local_config import config
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(f"Usage: python {sys.argv[0]:s} <csv_file.csv>")
-        print(f"\t Example: python {sys.argv[0]:s} /tmp/marga_sim.csv")
-        sys.exit()
 
-    # data = np.genfromtxt(sys.argv[1],
+def plot_csv(path: Path) -> None:
+    """Plot the given marga simulator *.csv output"""
+
+    # data = np.genfromtxt(path,
     #                      dtype=None,
     #                      comments='#',
     #                      delimiter=',',
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     #                      usecols=(0,1),
     #                      names=True)
 
-    data = np.loadtxt(sys.argv[1], skiprows=2, delimiter=",")
+    data = np.loadtxt(path, skiprows=2, delimiter=",")
     data[1:, 0] = (
         data[1:, 0] - data[1, 0] + 1
     )  # remove dead time in the beginning taken up by simulated memory writes
@@ -77,3 +77,11 @@ if __name__ == "__main__":
 
     fig.tight_layout()
     plt.show()
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print(f"Usage: python {sys.argv[0]:s} <csv_file.csv>")
+        print(f"\t Example: python {sys.argv[0]:s} /tmp/marga_sim.csv")
+        sys.exit()
+    plot_csv(sys.argv[1])
