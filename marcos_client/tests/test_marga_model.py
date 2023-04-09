@@ -12,22 +12,6 @@ python -m unittest test_marga_model.Modeltest.test_many_quick
 
 from marcos_client.tests.test_base import *
 
-# from marcos_client.tests.test_base import (
-#     compare_csv,
-#     compare_dict,
-#     compare_expt_dict,
-#     fhd_config,
-#     ip_address,
-#     marga_sim_csv,
-#     marga_sim_fst,
-#     marga_sim_fst_dump,
-#     marga_sim_path,
-#     oc1_config,
-#     port,
-#     restore_grad_board,
-#     set_grad_board,
-# )
-
 
 class ModelTest(unittest.TestCase):
     """Main test class for general HDL and compiler development/debugging;
@@ -800,10 +784,10 @@ class ModelTest(unittest.TestCase):
 
 
 def test_model():
-    testsuite = unittest.makeSuite(ModelTest)
+    testloader = unittest.TestLoader()
+    testsuite = testloader.loadTestsFromTestCase(ModelTest)
     unittest.TextTestRunner().run(testsuite)
 
 
 if __name__ == "__main__":
-    unittest.main()
-    # test_model()
+    test_model()

@@ -20,3 +20,12 @@ gpa_fhdo_current_per_volt = 2.5
 ## Uncomment the lines below and adjust the path to suit your
 ## flocra-pulseq location.
 flocra_pulseq = "/home/vlad/Documents/mri/flocra-pulseq"
+
+[simulator]
+# relative paths are relative to the current working directory when executing the commands!
+path = "../marga"  
+csv = "/tmp/marga_sim.csv"
+
+# Set to True to debug with GTKWave -- just do one test at a time!
+fst_dump = false
+fst = "/tmp/marga_sim.fst"

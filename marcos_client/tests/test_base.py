@@ -18,17 +18,17 @@ import numpy as np
 import marcos_client.experiment as exp
 import marcos_client.marcompile as mc
 import marcos_client.server_comms as sc
+from marcos_client.local_config import config
 
 ip_address = "localhost"
 port = 11111
 
 # simulation configuration
-marga_sim_path = Path(__file__).parent.parent.parent.parent / "marga"
-marga_sim_csv = Path("/tmp") / "marga_sim.csv"
+marga_sim_path = Path(config["simulator"]["path"])
+marga_sim_csv = Path(config["simulator"]["csv"])
 
-# Set to True to debug with GTKWave -- just do one test at a time!
-marga_sim_fst_dump = False
-marga_sim_fst = Path("/tmp") / "marga_sim.fst"
+marga_sim_fst_dump = config["simulator"]["fst_dump"]
+marga_sim_fst = Path(config["simulator"]["fst"])
 
 # Arguments for compare_csv when running gradient tests
 fhd_config = {
