@@ -10,18 +10,6 @@ To run a single test, use e.g.:
 python -m unittest test_marga_model.Modeltest.test_many_quick
 """
 
-
-import os
-import socket
-import subprocess
-import time
-import unittest
-import warnings
-
-import numpy as np
-
-import marcos_client.marcompile as mc
-import marcos_client.marmachine as mm
 from marcos_client.tests.test_base import *
 
 # from marcos_client.tests.test_base import (
@@ -59,7 +47,7 @@ class ModelTest(unittest.TestCase):
             ["killall", "marga_sim"], stderr=subprocess.DEVNULL
         )  # in case other instances were started earlier
 
-        warnings.simplefilter("ignore", mm.MarServerWarning)
+        warnings.simplefilter("ignore", mc.MarServerWarning)
 
     def setUp(self):
         # start simulation
@@ -120,10 +108,10 @@ class ModelTest(unittest.TestCase):
 
     def test_long_time(self):
         """State change on four buffers in parallel"""
-        max_orig = mm.COUNTER_MAX
-        mm.COUNTER_MAX = 0xFFF  # temporarily reduce max time used by compiler
+        max_orig = mc.COUNTER_MAX
+        mc.COUNTER_MAX = 0xFFF  # temporarily reduce max time used by compiler
         refl, siml = compare_csv("test_long_time", self.s, self.p)
-        mm.COUNTER_MAX = max_orig
+        mc.COUNTER_MAX = max_orig
         self.assertEqual(refl, siml)
 
     def test_single_quick(self):
@@ -417,7 +405,7 @@ class ModelTest(unittest.TestCase):
         reps = 2000
         d = {"tx0_i": (np.arange(100, 100 + reps), np.array([10000] * reps))}
         with self.assertWarns(
-            mm.MarRemovedInstructionWarning,
+            mc.MarRemovedInstructionWarning,
             msg="expected marcompile warning not observed",
         ):
             refl, siml = compare_dict(d, "test_single", self.s, self.p)
@@ -781,7 +769,7 @@ class ModelTest(unittest.TestCase):
             )
         }
         with warnings.catch_warnings():
-            warnings.filterwarnings("error", category=mm.MarRemovedInstructionWarning)
+            warnings.filterwarnings("error", category=mc.MarRemovedInstructionWarning)
             refl, siml = compare_expt_dict(
                 d, "test_tx_complex_expt", self.s, self.p, **expt_args
             )
