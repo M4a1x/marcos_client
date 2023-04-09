@@ -15,10 +15,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-import marcos_client.experiment as exp
-import marcos_client.marcompile as mc
-import marcos_client.server_comms as sc
-from marcos_client.local_config import config
+import marcos.experiment as exp
+import marcos.marcompile as mc
+import marcos.server_comms as sc
+from marcos.local_config import config
 
 ip_address = "localhost"
 port = 11111

@@ -39,10 +39,10 @@ Issues = "https://github.com/vnegnev/marcos_client/issues"
 Source = "https://github.com/vnegnev/marcos_client"
 
 [project.scripts]
-marcos = "marcos_client.cli:main"
+marcos = "marcos.cli:main"
 
 [tool.hatch.version]
-path = "marcos_client/__about__.py"
+path = "marcos/__about__.py"
 
 [tool.hatch.envs.default]
 path = ".venv"
@@ -57,12 +57,12 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=marcos_client --cov=tests {args}"
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=marcos --cov=tests {args}"
 no-cov = "cov --no-cov {args}"
 check = [
   "black --check --diff {args:.}",
   "ruff {args:.}",
-  "pylint {args:marcos_client tests}",
+  "pylint {args:marcos tests}",
 ]
 fmt = ["black {args:.}", "ruff --fix {args:.}"]
 
@@ -133,7 +133,7 @@ ban-relative-imports = "all"
 [tool.coverage.run]
 branch = true
 parallel = true
-omit = ["marcos_client/__about__.py"]
+omit = ["marcos/__about__.py"]
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]

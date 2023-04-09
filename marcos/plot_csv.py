@@ -8,7 +8,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from marcos_client.local_config import config
+from marcos.local_config import config
 
 
 def plot_csv(path: Path) -> None:

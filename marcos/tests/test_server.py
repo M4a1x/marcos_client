@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 import msgpack
 import numpy as np
 
-from marcos_client.local_config import config
-from marcos_client.server_comms import (
+from marcos.local_config import config
+from marcos.server_comms import (
     close_server_pkt,
     construct_packet,
     reply_pkt,

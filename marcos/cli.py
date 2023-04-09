@@ -2,10 +2,10 @@ import argparse
 import logging
 from pathlib import Path
 
-from marcos_client import local_config
-from marcos_client.__about__ import __version__
-from marcos_client.plot_csv import plot_csv
-from marcos_client.tests.test_marga_model import test_model
+from marcos import local_config
+from marcos.__about__ import __version__
+from marcos.plot_csv import plot_csv
+from marcos.tests.test_marga_model import test_model
 
 logger = logging.getLogger(__name__)
 

@@ -6,7 +6,7 @@
 
 import numpy as np
 
-import marcos_client.experiment as exp
+import marcos.experiment as exp
 
 
 class Marcostek:

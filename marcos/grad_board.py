@@ -44,7 +44,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.polynomial import Polynomial
 
-from marcos_client.local_config import config
+from marcos.local_config import config
 
 grad_clk_t = 1 / config["server"]["fpga_clk_freq_MHz"]  # ~8.14ns period for RP-122
 

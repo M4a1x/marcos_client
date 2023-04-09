@@ -9,9 +9,9 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 
-import marcos_client.marcompile as fc
-from marcos_client.local_config import config
-from marcos_client.marmachine import (
+import marcos.marcompile as fc
+from marcos.local_config import config
+from marcos.marmachine import (
     DDS0_PHASE_LSB,
     DDS0_PHASE_MSB,
     DDS1_PHASE_LSB,
@@ -32,7 +32,7 @@ from marcos_client.marmachine import (
 )
 
 # from marcos_client.server_comms import *
-from marcos_client.server_comms import (
+from marcos.server_comms import (
     close_server_pkt,
     command,
     construct_packet,

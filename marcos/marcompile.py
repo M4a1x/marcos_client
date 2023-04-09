@@ -6,8 +6,8 @@ import warnings
 
 import numpy as np
 
-from marcos_client.local_config import config
-from marcos_client.marmachine import *
+from marcos.local_config import config
+from marcos.marmachine import *
 
 logger = logging.getLogger(__name__)
 

@@ -4,8 +4,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from marcos_client import experiment as ex
-from marcos_client.local_config import config
+from marcos import experiment as ex
+from marcos.local_config import config
 
 grad_board = config["server"]["grad_board"]
 

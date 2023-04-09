@@ -7,7 +7,7 @@
 import numpy as np
 from pulseq_assembler import PSAssembler
 
-import marcos_client.experiment as ex
+import marcos.experiment as ex
 
 if __name__ == "__main__":
     lo_freq = 2.1  # MHz

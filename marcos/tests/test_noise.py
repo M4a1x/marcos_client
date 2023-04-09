@@ -4,8 +4,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import marcos_client.experiment as ex
-from marcos_client.local_config import config
+import marcos.experiment as ex
+from marcos.local_config import config
 
 
 def test_jitter(
