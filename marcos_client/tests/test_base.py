@@ -2,24 +2,24 @@
 #
 # Base definitions and functions used for marga testing/simulation
 
-import os
+from pathlib import Path
 
 import numpy as np
 
-from marcos_client import Experiment as exp
-from marcos_client import marcompile as mc
-from marcos_client import server_comms as sc
+import marcos_client.experiment as exp
+import marcos_client.marcompile as mc
+import marcos_client.server_comms as sc
 
 ip_address = "localhost"
 port = 11111
 
 # simulation configuration
-marga_sim_path = os.path.join("..", "marga")
-marga_sim_csv = os.path.join("/tmp", "marga_sim.csv")
+marga_sim_path = Path(__file__).parent.parent.parent.parent / "marga"
+marga_sim_csv = Path("/tmp") / "marga_sim.csv"
 
 # Set to True to debug with GTKWave -- just do one test at a time!
 marga_sim_fst_dump = False
-marga_sim_fst = os.path.join("/tmp", "marga_sim.fst")
+marga_sim_fst = Path("/tmp") / "marga_sim.fst"
 
 # Arguments for compare_csv when running gradient tests
 fhd_config = {
@@ -148,7 +148,7 @@ def compare_csv(
     latencies=np.zeros(mc.MARGA_BUFS, dtype=np.uint32),
     self_ref=True,  # use the CSV source file as the reference file to compare the output with
 ):
-    source_csv = os.path.join("csvs", fname + ".csv")
+    source_csv = (Path(__file__).parent / "csvs" / fname).with_suffix(".csv").resolve()
     lc = mc.csv2bin(
         source_csv, quick_start=False, initial_bufs=initial_bufs, latencies=latencies
     )
@@ -176,10 +176,10 @@ def compare_csv(
 
         return rdata.tolist(), sdata.tolist()
     else:
-        ref_csv = os.path.join("csvs", "ref_" + fname + ".csv")
-        with open(ref_csv) as ref:
+        ref_csv = (Path(__file__).parent / "csvs" / f"ref_{fname}.csv").resolve()
+        with ref_csv.open() as ref:
             refl = ref.read().splitlines()
-        with open(marga_sim_csv) as sim:
+        with marga_sim_csv.open() as sim:
             siml = sim.read().splitlines()
         return refl, siml
 
@@ -204,14 +204,14 @@ def compare_dict(
     sock.close()
     proc.wait(1)  # wait a short time for simulator to close
 
-    ref_csv = os.path.join("csvs", ref_fname + ".csv")
-    with open(ref_csv) as ref:
+    ref_csv = (Path(__file__).parent / "csvs" / ref_fname).with_suffix(".csv").resolve()
+    with ref_csv.open() as ref:
         refl = ref.read().splitlines()
-    with open(marga_sim_csv) as sim:
+    with marga_sim_csv.open() as sim:
         siml = sim.read().splitlines()
     # return refl, siml
 
-    ref_csv = os.path.join("csvs", ref_fname + ".csv")
+    ref_csv = (Path(__file__).parent / "csvs" / ref_fname).with_suffix(".csv").resolve()
     if ignore_start_delay:
         rdata = np.loadtxt(ref_csv, skiprows=1, delimiter=",", comments="#").astype(
             np.uint32
@@ -225,9 +225,9 @@ def compare_dict(
 
         return rdata.tolist(), sdata.tolist()
     else:
-        with open(ref_csv) as ref:
+        with ref_csv.open() as ref:
             refl = ref.read().splitlines()
-        with open(marga_sim_csv) as sim:
+        with marga_sim_csv.open() as sim:
             siml = sim.read().splitlines()
         return refl, siml
 
@@ -267,14 +267,14 @@ def compare_expt_dict(
     sock.close()
     proc.wait(1)  # wait a short time for simulator to close
 
-    ref_csv = os.path.join("csvs", ref_fname + ".csv")
-    with open(ref_csv) as ref:
+    ref_csv = (Path(__file__).parent / "csvs" / ref_fname).with_suffix(".csv").resolve()
+    with ref_csv.open() as ref:
         refl = ref.read().splitlines()
-    with open(marga_sim_csv) as sim:
+    with marga_sim_csv.open() as sim:
         siml = sim.read().splitlines()
     # return refl, siml
 
-    ref_csv = os.path.join("csvs", ref_fname + ".csv")
+    ref_csv = (Path(__file__).parent / "csvs" / ref_fname).with_suffix(".csv").resolve()
     if ignore_start_delay:
         rdata = np.loadtxt(ref_csv, skiprows=1, delimiter=",", comments="#").astype(
             np.uint32
@@ -288,8 +288,8 @@ def compare_expt_dict(
 
         return rdata.tolist(), sdata.tolist()
     else:
-        with open(ref_csv) as ref:
+        with ref_csv.open() as ref:
             refl = ref.read().splitlines()
-        with open(marga_sim_csv) as sim:
+        with marga_sim_csv.open() as sim:
             siml = sim.read().splitlines()
         return refl, siml

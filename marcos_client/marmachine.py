@@ -1,8 +1,8 @@
-# /usr/bin/env python3
-# Machine code defines and functions for marga.
-#
-# Functions should be fast, without any floating-point arithmetic -
-# that should be handled at a higher level.
+"""Machine code defines and functions for marga.
+
+Functions should be fast, without any floating-point arithmetic -
+that should be handled at a higher level.
+"""
 
 
 class MarUserWarning(UserWarning):

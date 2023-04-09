@@ -5,6 +5,7 @@ from pathlib import Path
 from marcos_client import local_config
 from marcos_client.__about__ import __version__
 from marcos_client.plot_csv import plot_csv
+from marcos_client.tests.test_marga_model import test_model
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,13 @@ def main():
 
     # Commands
     if hasattr(args, "csv"):
+        logger.info("Plotting csv...")
         plot_csv(args.csv)
+
+    if hasattr(args, "test"):
+        if args.test == "marga":
+            logger.info("Testing marga model...")
+            test_model()
 
 
 def _parse_args() -> argparse.Namespace:
@@ -77,6 +84,17 @@ def _parse_args() -> argparse.Namespace:
         metavar="marga_sim.csv",
     )
 
-    # Tests
+    # Test Commands
+    test_parser = subparsers.add_parser(
+        "test",
+        help="run various tests against the server or simulator",
+        description="Run a test and compare the output with expected values",
+    )
+    test_parser.add_argument(
+        "test",
+        help="Choose a test to run",
+        choices=["marga", "noise", "server"],
+        metavar="choice",
+    )
 
     return parser.parse_args()

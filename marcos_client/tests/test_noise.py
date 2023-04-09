@@ -4,7 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from marcos_client import experiment as ex
+import marcos_client.experiment as ex
 from marcos_client.local_config import config
 
 

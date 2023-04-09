@@ -14,7 +14,7 @@
 
 import numpy as np
 
-from marcos_client import experiment as ex
+import marcos_client.experiment as ex
 
 # In each TR, a wait of rf_start_delay occurs, the RF turns on, it
 # turns off after rf_length. Each TR is by default 1 second long. The RX

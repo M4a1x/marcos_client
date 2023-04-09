@@ -1,19 +1,44 @@
 #!/usr/bin/env python3
-#
-# Integrated test of the MaRCoS server, HDL and compiler.
-#
-# Script compiles and runs the MaRCoS Verilator simulation (server +
-# HDL model) and sends it various binaries generated using the MaRCoS
-# client compiler, then compares the simulated hardware output against
-# the expected output.
-#
-# To run a single test, use e.g.:
-# python -m unittest test_marga_model.Modeltest.test_many_quick
+"""Integrated test of the MaRCoS server, HDL and compiler.
+
+Script compiles and runs the MaRCoS Verilator simulation (server +
+HDL model) and sends it various binaries generated using the MaRCoS
+client compiler, then compares the simulated hardware output against
+the expected output.
+
+To run a single test, use e.g.:
+python -m unittest test_marga_model.Modeltest.test_many_quick
+"""
 
 
+import os
+import socket
+import subprocess
+import time
 import unittest
+import warnings
 
+import numpy as np
+
+import marcos_client.marcompile as mc
+import marcos_client.marmachine as mm
 from marcos_client.tests.test_base import *
+
+# from marcos_client.tests.test_base import (
+#     compare_csv,
+#     compare_dict,
+#     compare_expt_dict,
+#     fhd_config,
+#     ip_address,
+#     marga_sim_csv,
+#     marga_sim_fst,
+#     marga_sim_fst_dump,
+#     marga_sim_path,
+#     oc1_config,
+#     port,
+#     restore_grad_board,
+#     set_grad_board,
+# )
 
 
 class ModelTest(unittest.TestCase):
@@ -28,25 +53,23 @@ class ModelTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # TODO make this check for a file first
-        subprocess.call(
-            ["make", "-j4", "-s", "-C", os.path.join(marga_sim_path, "build")]
-        )
+        subprocess.call(["make", "-j4", "-s", "-C", str(marga_sim_path / "build")])
         subprocess.call(["fallocate", "-l", "516KiB", "/tmp/marcos_server_mem"])
         subprocess.call(
             ["killall", "marga_sim"], stderr=subprocess.DEVNULL
         )  # in case other instances were started earlier
 
-        warnings.simplefilter("ignore", mc.MarServerWarning)
+        warnings.simplefilter("ignore", mm.MarServerWarning)
 
     def setUp(self):
         # start simulation
         if marga_sim_fst_dump:
             self.p = subprocess.Popen(
                 [
-                    os.path.join(marga_sim_path, "build", "marga_sim"),
+                    str(marga_sim_path / "build" / "marga_sim"),
                     "both",
-                    marga_sim_csv,
-                    marga_sim_fst,
+                    str(marga_sim_csv),
+                    str(marga_sim_fst),
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -54,9 +77,9 @@ class ModelTest(unittest.TestCase):
         else:
             self.p = subprocess.Popen(
                 [
-                    os.path.join(marga_sim_path, "build", "marga_sim"),
+                    str(marga_sim_path / "build" / "marga_sim"),
                     "csv",
-                    marga_sim_csv,
+                    str(marga_sim_csv),
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -78,9 +101,9 @@ class ModelTest(unittest.TestCase):
             # open GTKWave
             os.system(
                 "gtkwave "
-                + marga_sim_fst
+                + str(marga_sim_fst)
                 + " "
-                + os.path.join(marga_sim_path, "src", "marga_sim.sav")
+                + str(marga_sim_path / "src" / "marga_sim.sav")
             )
 
     ## Tests are approximately in order of complexity
@@ -97,10 +120,10 @@ class ModelTest(unittest.TestCase):
 
     def test_long_time(self):
         """State change on four buffers in parallel"""
-        max_orig = mc.COUNTER_MAX
-        mc.COUNTER_MAX = 0xFFF  # temporarily reduce max time used by compiler
+        max_orig = mm.COUNTER_MAX
+        mm.COUNTER_MAX = 0xFFF  # temporarily reduce max time used by compiler
         refl, siml = compare_csv("test_long_time", self.s, self.p)
-        mc.COUNTER_MAX = max_orig
+        mm.COUNTER_MAX = max_orig
         self.assertEqual(refl, siml)
 
     def test_single_quick(self):
@@ -394,7 +417,7 @@ class ModelTest(unittest.TestCase):
         reps = 2000
         d = {"tx0_i": (np.arange(100, 100 + reps), np.array([10000] * reps))}
         with self.assertWarns(
-            mc.MarRemovedInstructionWarning,
+            mm.MarRemovedInstructionWarning,
             msg="expected marcompile warning not observed",
         ):
             refl, siml = compare_dict(d, "test_single", self.s, self.p)
@@ -758,7 +781,7 @@ class ModelTest(unittest.TestCase):
             )
         }
         with warnings.catch_warnings():
-            warnings.filterwarnings("error", category=mc.MarRemovedInstructionWarning)
+            warnings.filterwarnings("error", category=mm.MarRemovedInstructionWarning)
             refl, siml = compare_expt_dict(
                 d, "test_tx_complex_expt", self.s, self.p, **expt_args
             )
@@ -788,5 +811,11 @@ class ModelTest(unittest.TestCase):
         self.assertEqual(refl, siml)
 
 
+def test_model():
+    testsuite = unittest.makeSuite(ModelTest)
+    unittest.TextTestRunner().run(testsuite)
+
+
 if __name__ == "__main__":
     unittest.main()
+    # test_model()

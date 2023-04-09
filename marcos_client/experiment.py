@@ -8,9 +8,9 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 
-from marcos_client import grad_board as gb
-from marcos_client import marcompile as fc
-from marcos_client import server_comms as sc
+import marcos_client.grad_board as gb
+import marcos_client.marcompile as fc
+import marcos_client.server_comms as sc
 from marcos_client.local_config import config
 
 fpga_clk_freq_MHz = config["server"]["fpga_clk_freq_MHz"]

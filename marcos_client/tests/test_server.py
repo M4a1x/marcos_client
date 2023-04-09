@@ -9,10 +9,20 @@ import unittest
 import warnings
 
 import matplotlib.pyplot as plt
+import msgpack
 import numpy as np
 
 from marcos_client.local_config import config
-from marcos_client.server_comms import *
+from marcos_client.server_comms import (
+    close_server_pkt,
+    construct_packet,
+    reply_pkt,
+    send_packet,
+    version_debug,
+    version_full,
+    version_major,
+    version_minor,
+)
 
 
 class ServerTest(unittest.TestCase):
@@ -101,7 +111,7 @@ class ServerTest(unittest.TestCase):
                     print("Equal")
                 else:
                     print("Not equal! Debugging...")
-                    st()
+                    # st()
             self.assertEqual(reply, expected_reply)
 
     def test_idle(self):
@@ -542,7 +552,7 @@ class ServerTest(unittest.TestCase):
         )
         reply_packet = send_packet(packet, self.s)
         # CONTINUE HERE: this should be handled gracefully by the server
-        st()
+        # st()
         self.assertEqual(
             reply_packet, [reply, 1, 0, version_full, {"configure_hw": 3}, {}]
         )

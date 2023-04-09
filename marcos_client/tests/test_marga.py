@@ -4,14 +4,40 @@
 
 import socket
 import time
+import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from marcos_client import marcompile as fc
+import marcos_client.marcompile as fc
 from marcos_client.local_config import config
-from marcos_client.marmachine import *
-from marcos_client.server_comms import *
+from marcos_client.marmachine import (
+    DDS0_PHASE_LSB,
+    DDS0_PHASE_MSB,
+    DDS1_PHASE_LSB,
+    DDS1_PHASE_MSB,
+    GATES_LEDS,
+    IFINISH,
+    IWAIT,
+    RX0_RATE,
+    RX1_RATE,
+    RX_CTRL,
+    STATE_HALT,
+    TX0_I,
+    TX0_Q,
+    TX1_I,
+    TX1_Q,
+    insta,
+    instb,
+)
+
+# from marcos_client.server_comms import *
+from marcos_client.server_comms import (
+    close_server_pkt,
+    command,
+    construct_packet,
+    send_packet,
+)
 
 fpga_clk_freq_MHz = config["server"]["fpga_clk_freq_MHz"]
 grad_board = config["server"]["grad_board"]
@@ -823,7 +849,7 @@ if __name__ == "__main__":
 
     if False:
         data = long_loopback()
-        st()
+        # st()
 
     if False:  # single shot, plot RX
         res = run_streaming_test(example_tr_loop())

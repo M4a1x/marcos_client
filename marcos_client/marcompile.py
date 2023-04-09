@@ -7,21 +7,23 @@ import warnings
 import numpy as np
 
 from marcos_client.local_config import config
-from marcos_client.marmachine import (
-    CIC_FASTEST_RATE,
-    CIC_RATE_DATAWIDTH,
-    CIC_SLOWEST_RATE,
-    CIC_STAGES,
-    COUNTER_MAX,
-    IFINISH,
-    INOP,
-    IWAIT,
-    MARGA_BUFS,
-    MarGradWarning,
-    MarRemovedInstructionWarning,
-    insta,
-    instb,
-)
+from marcos_client.marmachine import *
+
+# from marcos_client.marmachine import (
+#     CIC_FASTEST_RATE,
+#     CIC_RATE_DATAWIDTH,
+#     CIC_SLOWEST_RATE,
+#     CIC_STAGES,
+#     COUNTER_MAX,
+#     IFINISH,
+#     INOP,
+#     IWAIT,
+#     MARGA_BUFS,
+#     MarGradWarning,
+#     MarRemovedInstructionWarning,
+#     insta,
+#     instb,
+# )
 
 logger = logging.getLogger(__name__)
 
