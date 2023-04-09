@@ -31,7 +31,6 @@ from marcos.marmachine import (
     instb,
 )
 
-# from marcos_client.server_comms import *
 from marcos.server_comms import (
     close_server_pkt,
     command,

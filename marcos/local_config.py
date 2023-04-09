@@ -58,7 +58,7 @@ def _save_default_config(config_path: Path) -> None:
 
 def _load_default_config() -> str:
     """Load the default configuration"""
-    return rsc.read_text("marcos_client", "local_config.toml.example")
+    return rsc.read_text("marcos", "local_config.toml.example")
 
 
 def _find_config_files_in_default_directories() -> list[Path]:
