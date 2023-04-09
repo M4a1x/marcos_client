@@ -26,7 +26,7 @@ class ModelTest(unittest.TestCase):
     def setUpClass(cls):
         # TODO make this check for a file first
         subprocess.call(["make", "-j4", "-s", "-C", str(marga_sim_path / "build")])
-        subprocess.call(["fallocate", "-l", "516KiB", "/tmp/marcos_server_mem"])
+        subprocess.call(["fallocate", "-l", "516KiB", str(marga_sim_mem_file)])
         subprocess.call(
             ["killall", "marga_sim"], stderr=subprocess.DEVNULL
         )  # in case other instances were started earlier

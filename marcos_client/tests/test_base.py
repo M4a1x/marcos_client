@@ -30,6 +30,8 @@ marga_sim_csv = Path(config["simulator"]["csv"])
 marga_sim_fst_dump = config["simulator"]["fst_dump"]
 marga_sim_fst = Path(config["simulator"]["fst"])
 
+marga_sim_mem_file = Path(config["simulator"]["mem_file"])
+
 # Arguments for compare_csv when running gradient tests
 fhd_config = {
     "initial_bufs": np.array(

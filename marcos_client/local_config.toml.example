@@ -29,3 +29,5 @@ csv = "/tmp/marga_sim.csv"
 # Set to True to debug with GTKWave -- just do one test at a time!
 fst_dump = false
 fst = "/tmp/marga_sim.fst"
+
+mem_file = "/tmp/marcos_server_mem"
