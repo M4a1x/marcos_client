@@ -1,41 +1,40 @@
-#!/usr/bin/env python3
-#
-# Classes to handle GPA initialisation, calibration and communication
-#
-# They need to at least implement the following methods:
-#
-# init_hw() to program the GPA chips on power-up or reset them if
-# they're in an undefined state
-#
-# write_dac() to send binary numbers directly to a DAC (the method
-# should take care of bit shifts, extra bits etc - the user supplies
-# only the binary DAC output code)
-#
-# read_adc() to retrieve a binary ADC word from the GPA (if enabled);
-# should output the binary ADC code, but shouldn't be responsible for
-# off-by-one codes (i.e. for the GPA-FHDO, it doesn't have to correct
-# the ADC's behaviour of sending the previously-read voltage with the
-# current transfer)
-#
-# calibrate() to prepare the data for user-defined calibration
-# procedures (such as scaling/offset, piecewise interpolation, etc) to
-# take place later. This might be outputting test currents and
-# measuring the actual current using an ADC, loading a file containing
-# manually acquired code-vs-voltage calibration data, etc.
-# Once the method has been run, the system should be ready to handle:
-#
-# float2bin() to convert a list of input Numpy arrays in units of the
-# full-scale DAC output (i.e. [-1, 1]) into the binary BRAM data to
-# reproduce the multi-channel waveform on the GPA - should apply any
-# desired calibrations/transforms internally.
-#
-# bin2float() to convert the binary data into [-1, 1] floats.
-#
-# keys() returns the gradient board-specific labels
-#
-# key_convert() to convert from the user-facing dictionary key labels
-# to gradient board-specific labels, and also return a channel
-#
+"""Classes to handle GPA initialisation, calibration and communication
+
+They need to at least implement the following methods:
+
+init_hw() to program the GPA chips on power-up or reset them if
+they're in an undefined state
+
+write_dac() to send binary numbers directly to a DAC (the method
+should take care of bit shifts, extra bits etc - the user supplies
+only the binary DAC output code)
+
+read_adc() to retrieve a binary ADC word from the GPA (if enabled);
+should output the binary ADC code, but shouldn't be responsible for
+off-by-one codes (i.e. for the GPA-FHDO, it doesn't have to correct
+the ADC's behaviour of sending the previously-read voltage with the
+current transfer)
+
+calibrate() to prepare the data for user-defined calibration
+procedures (such as scaling/offset, piecewise interpolation, etc) to
+take place later. This might be outputting test currents and
+measuring the actual current using an ADC, loading a file containing
+manually acquired code-vs-voltage calibration data, etc.
+Once the method has been run, the system should be ready to handle:
+
+float2bin() to convert a list of input Numpy arrays in units of the
+full-scale DAC output (i.e. [-1, 1]) into the binary BRAM data to
+reproduce the multi-channel waveform on the GPA - should apply any
+desired calibrations/transforms internally.
+
+bin2float() to convert the binary data into [-1, 1] floats.
+
+keys() returns the gradient board-specific labels
+
+key_convert() to convert from the user-facing dictionary key labels
+to gradient board-specific labels, and also return a channel
+"""
+
 # TODO: actually use class inheritance here, instead of two separate classes
 
 import time
