@@ -1,54 +1,52 @@
-#!/usr/bin/env python3
-#
-# Classes to handle GPA initialisation, calibration and communication
-#
-# They need to at least implement the following methods:
-#
-# init_hw() to program the GPA chips on power-up or reset them if
-# they're in an undefined state
-#
-# write_dac() to send binary numbers directly to a DAC (the method
-# should take care of bit shifts, extra bits etc - the user supplies
-# only the binary DAC output code)
-#
-# read_adc() to retrieve a binary ADC word from the GPA (if enabled);
-# should output the binary ADC code, but shouldn't be responsible for
-# off-by-one codes (i.e. for the GPA-FHDO, it doesn't have to correct
-# the ADC's behaviour of sending the previously-read voltage with the
-# current transfer)
-#
-# calibrate() to prepare the data for user-defined calibration
-# procedures (such as scaling/offset, piecewise interpolation, etc) to
-# take place later. This might be outputting test currents and
-# measuring the actual current using an ADC, loading a file containing
-# manually acquired code-vs-voltage calibration data, etc.
-# Once the method has been run, the system should be ready to handle:
-#
-# float2bin() to convert a list of input Numpy arrays in units of the
-# full-scale DAC output (i.e. [-1, 1]) into the binary BRAM data to
-# reproduce the multi-channel waveform on the GPA - should apply any
-# desired calibrations/transforms internally.
-#
-# bin2float() to convert the binary data into [-1, 1] floats.
-#
-# keys() returns the gradient board-specific labels
-#
-# key_convert() to convert from the user-facing dictionary key labels
-# to gradient board-specific labels, and also return a channel
-#
+"""Classes to handle GPA initialisation, calibration and communication
+
+They need to at least implement the following methods:
+
+init_hw() to program the GPA chips on power-up or reset them if
+they're in an undefined state
+
+write_dac() to send binary numbers directly to a DAC (the method
+should take care of bit shifts, extra bits etc - the user supplies
+only the binary DAC output code)
+
+read_adc() to retrieve a binary ADC word from the GPA (if enabled);
+should output the binary ADC code, but shouldn't be responsible for
+off-by-one codes (i.e. for the GPA-FHDO, it doesn't have to correct
+the ADC's behaviour of sending the previously-read voltage with the
+current transfer)
+
+calibrate() to prepare the data for user-defined calibration
+procedures (such as scaling/offset, piecewise interpolation, etc) to
+take place later. This might be outputting test currents and
+measuring the actual current using an ADC, loading a file containing
+manually acquired code-vs-voltage calibration data, etc.
+Once the method has been run, the system should be ready to handle:
+
+float2bin() to convert a list of input Numpy arrays in units of the
+full-scale DAC output (i.e. [-1, 1]) into the binary BRAM data to
+reproduce the multi-channel waveform on the GPA - should apply any
+desired calibrations/transforms internally.
+
+bin2float() to convert the binary data into [-1, 1] floats.
+
+keys() returns the gradient board-specific labels
+
+key_convert() to convert from the user-facing dictionary key labels
+to gradient board-specific labels, and also return a channel
+"""
+
 # TODO: actually use class inheritance here, instead of two separate classes
 
+import time
+import warnings
+
+import matplotlib.pyplot as plt
 import numpy as np
 from numpy.polynomial import Polynomial
-import time, warnings
-import matplotlib.pyplot as plt
-import local_config as lc
 
-import pdb
+from marcos.local_config import config
 
-st = pdb.set_trace
-
-grad_clk_t = 1 / lc.fpga_clk_freq_MHz  # ~8.14ns period for RP-122
+grad_clk_t = 1 / config["server"]["fpga_clk_freq_MHz"]  # ~8.14ns period for RP-122
 
 
 class OCRA1:
@@ -121,7 +119,7 @@ class OCRA1:
         """try multiple times until ocra1_iface core is idle -- read marga
         register 5 and look at the ocra1 busy bit
         """
-        for m in range(
+        for _m in range(
             2
         ):  # waste a few cycles initially (mostly important for simulation)
             rd, _ = self.server_command({"regrd": 5})
@@ -176,7 +174,7 @@ class OCRA1:
             }
         )
 
-        for k, iw in enumerate(init_words):
+        for _k, iw in enumerate(init_words):
             self.wait_for_ocra1_iface_idle()
 
             # direct commands to grad board; send MSBs then LSBs
@@ -203,7 +201,7 @@ class OCRA1:
 
     def calibrate(self):
         # Fill more in here
-        st()
+        pass
 
     def keys(self):
         return ["ocra1_" + l for l in ["vx", "vy", "vz", "vz2"]]
@@ -252,7 +250,7 @@ class GPAFHDO:
 
         # try to get from local_config.py
         try:
-            self.gpa_current_per_volt = lc.gpa_fhdo_current_per_volt
+            self.gpa_current_per_volt = config["server"]["gpa_fhdo_current_per_volt"]
         except AttributeError:
             self.gpa_current_per_volt = (
                 2.5  # if it doesn't match your grad board, add to your local_config.py
@@ -265,7 +263,7 @@ class GPAFHDO:
         # self.gpaCalValues = np.tile(self.expected_adc_code_from_dac_code(self.dac_values), (self.grad_channels, 1))
 
         self.gpaCal = []
-        for k in range(self.grad_channels):
+        for _k in range(self.grad_channels):
             self.gpaCal.append(Polynomial([0, 1]))  # polynomials for calibration
 
         self.bin_config = {
@@ -321,7 +319,7 @@ class GPAFHDO:
         """try multiple times until gpa_fhdo_iface core is idle -- read marga
         register 5 and look at the fhdo busy bit
         """
-        for m in range(
+        for _m in range(
             2
         ):  # waste a few cycles initially (mostly important for simulation)
             rd, _ = self.server_command({"regrd": 5})
@@ -514,7 +512,6 @@ class GPAFHDO:
         test_cal=False,  # Purely for debugging
         plot=False,
     ):
-
         for chan in channels:
             grad_vals = np.linspace(
                 self.amp2grad(-max_current),
@@ -529,7 +526,7 @@ class GPAFHDO:
                 # time.sleep(0.001) # 1ms
                 self.read_adc(chan)  # dummy
                 time.sleep(0.001)  # 1ms
-                for m in range(averages):
+                for _m in range(averages):
                     adc_vals[k] += self.read_adc(chan)  # real
 
             # restore to rough midpoint, in case calibration fails
@@ -549,7 +546,6 @@ class GPAFHDO:
                 )
                 plt.show()
             else:
-
                 # perform polynomial fit
                 try:
                     p = Polynomial.fit(observed_grad_vals, grad_vals, poly_degree)
@@ -632,7 +628,7 @@ class GPAFHDO:
                 plt.plot(self.dac_values, adc_values.max(1), "y.")
                 plt.plot(self.dac_values, adc_values.sum(1) / averages, "b.")
                 plt.xlabel("DAC word")
-                plt.ylabel("ADC word, {:d} averages".format(averages))
+                plt.ylabel(f"ADC word, {averages:d} averages")
                 plt.grid(True)
                 plt.show()
 
